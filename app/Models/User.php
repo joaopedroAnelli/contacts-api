@@ -30,4 +30,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'password',
     ];
+
+
+    public function contacts()
+    {
+        return $this->hasMany('App\Models\Contact', 'user_id');
+    }
 }

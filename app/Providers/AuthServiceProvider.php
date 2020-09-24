@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -30,10 +33,18 @@ class AuthServiceProvider extends ServiceProvider
         // should return either a User instance or null. You're free to obtain
         // the User instance via an API token or any other method necessary.
 
-        $this->app['auth']->viaRequest('api', function ($request) {
-            if ($request->input('api_token')) {
-                return User::where('api_token', $request->input('api_token'))->first();
-            }
-        });
+        /**
+         * @param Request $request
+         * @return Builder|Model|object|null
+         */
+        $getUserByRequest = function (Request $request) {
+            return User
+                ::query()
+                ->where([
+                    'api_token' => $request->bearerToken()
+                ])->first();
+        };
+
+        $this->app['auth']->viaRequest('api', $getUserByRequest);
     }
 }
