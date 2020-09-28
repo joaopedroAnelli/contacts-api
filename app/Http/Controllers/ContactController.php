@@ -18,7 +18,7 @@ class ContactController extends Controller
         $this->middleware('auth');
     }
 
-    public function show(Request $request)
+    public function index(Request $request)
     {
         /** @var User $user */
         $user = $request->user();
